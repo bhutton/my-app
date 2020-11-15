@@ -1,46 +1,42 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {Flex} from '@chakra-ui/core';
-import {AgGridColumn, AgGridReact} from 'ag-grid-react';
-import {Link} from 'react-router-dom';
-
-/* import "ag-grid-community/dist/styles/ag-grid.css";
- * import "ag-grid-community/dist/styles/ag-theme-alpine.css";
- *  */
-
-/* import 'ag-grid-community/dist/styles/ag-theme-alpine.css'; */
+import { Flex } from '@chakra-ui/core';
+import { AgGridColumn, AgGridReact } from 'ag-grid-react';
+import { Link } from 'react-router-dom';
 
 export function LinkMethod() {
-    return <Link to="/link">fred@bloggs.com</Link>;
+    return <Link to="/">fred@bloggs.com</Link>;
 }
 
-export function MyGraph() {
+export function MyGraph({ getFunc = getData }) {
     const response = [
         {
             name: 'Fred',
-            value: '1234'.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+            value: '1234',
             address: 'My Address',
             email: 'fred@bloggs.com',
         },
     ];
-    const [rowData, setRowData] = useState();
-    const data = getData(setRowData);
-    function onGridReady(params) {
-        setGridApi(params.api);
-        setGridColumnApi(params.columnApi);
-    }
-    console.log('data = ', rowData);
-    console.log('data2 = ', JSON.stringify(data.da));
+
+    const [data, setData] = useState(null);
+
+    const axiosResponse = getFunc();
+    useEffect(() => {
+        setData(axiosResponse.data);
+    });
     return (
         <Flex role="navigation" flex="0 0 auto" height="100%" position="sticky">
             <AgGridReact
-                onGridReady={onGridReady}
-                rowData={response}
+                rowData={data}
                 suppressColumnVirtualisation={process.env.NODE_ENV === 'test'}
             >
                 <AgGridColumn field="name" />
                 <AgGridColumn field="value" />
                 <AgGridColumn field="address" />
+                <AgGridColumn
+                    field="email"
+                    cellRendererFramework={LinkMethod}
+                />
                 <AgGridColumn setRowData />
             </AgGridReact>
             <Link to="/">test</Link>
@@ -48,11 +44,6 @@ export function MyGraph() {
     );
 }
 
-async function getData(setRowData) {
-    console.log('get data');
-    return await axios.get('/greeting').then((res) => {
-        console.log('res = ', res);
-        console.log('res = ', res.data);
-        setRowData(res.data);
-    });
+export async function getData() {
+    return await axios.get('http://127.0.0.1/greeting');
 }
