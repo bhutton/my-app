@@ -9,21 +9,13 @@ export function LinkMethod() {
 }
 
 export function MyGraph({ getFunc = getData }) {
-    const response = [
-        {
-            name: 'Fred',
-            value: '1234',
-            address: 'My Address',
-            email: 'fred@bloggs.com',
-        },
-    ];
-
     const [data, setData] = useState(null);
 
     const axiosResponse = getFunc();
     useEffect(() => {
         setData(axiosResponse.data);
     });
+
     return (
         <Flex role="navigation" flex="0 0 auto" height="100%" position="sticky">
             <AgGridReact
