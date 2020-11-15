@@ -27,11 +27,6 @@ describe('When loading graph', () => {
     afterAll(() => server.close());
 
     it('Displays something', async () => {
-        const history = createMemoryHistory();
-
-        // mock push function
-        history.push = jest.fn();
-
         const getDataMock = jest.fn(() => ({
             data: response,
         }));
@@ -53,7 +48,6 @@ describe('When loading graph', () => {
                 'http://localhost/',
             );
         });
-        /* expect(screen.getByText('test').href).toBe('http://localhost/'); */
     });
 
     it('Checks axios call', async () => {
